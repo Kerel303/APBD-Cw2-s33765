@@ -1,4 +1,6 @@
-﻿namespace  Projekt;
+﻿using System.Security.AccessControl;
+
+namespace  Projekt;
 
 using System.Text.Json;
 
@@ -10,16 +12,42 @@ public class Program
     static Repository<Equipment> Equipments;
     static Repository<Lease> Leases;
     
+    // bool podtrzymujący program przy życiu
+    static bool isRunning = true;
+    
     static void Main(String[] args)
     {
         LoadDatabase();
-        
-        
-        
-        
+
+        StartProgram();
+
     }
 
+    private static void StartProgram()
+    {
+        while (isRunning)
+        {
+            Console.Write("> ");
+            string input = Console.ReadLine();
+            
+            string[] inputArgs = input.Split(' ');
+            string command = inputArgs[0];
 
+            switch (command)
+            {
+                case "exit":
+                    isRunning = false;
+                    break;
+                case "help":
+                    Console.WriteLine("Here will be listed all availible commands");
+                    break;
+                default:
+                    Console.WriteLine($"'{input}' is not recognized as an available command");
+                    break;
+                    
+            }
+        }
+    }
 
     private static void LoadDatabase()
     {
@@ -32,7 +60,7 @@ public class Program
         
         Console.WriteLine("Database Loaded");
     }
-
+    
     
     
     // Wyświetlanie całej listy (Trzeba dodać do każdej głównej klasy ovveride na String)
