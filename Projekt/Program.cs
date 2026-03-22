@@ -87,13 +87,34 @@ public class Program
                     {
                         if (inputArgs[1] == "equipment")
                         {
-
+                            if (inputArgs[2].ToLower() == "laptop")
+                            {
+                                Equipments.Add(new Laptop());
+                            }if (inputArgs[2].ToLower() == "camera")
+                            {
+                                Equipments.Add(new Camera());
+                            }if (inputArgs[2].ToLower() == "projector")
+                            {
+                                Equipments.Add(new Projector());
+                            }
                         }else if (inputArgs[1] == "lease")
                         {
                             
                         }else if (inputArgs[1] == "user")
                         {
-                            
+                            if (inputArgs[2].ToLower() == "student" && args == 4)
+                            {
+                                Users.Add(new Student(inputArgs[3],  inputArgs[4]));
+                            }if (inputArgs[2].ToLower() == "employee" &&  args == 4)
+                            {
+                                Users.Add(new Employee(inputArgs[3],  inputArgs[4]));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input");
+                                Console.WriteLine("Correct Input: add user <type> <name> <surname>");
+                                Console.WriteLine("Existing types: student, employee");
+                            }
                         }else if (inputArgs[1] == "due")
                         {
                             

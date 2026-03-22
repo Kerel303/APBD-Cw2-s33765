@@ -1,6 +1,6 @@
 ﻿namespace Projekt;
 
-public class Projector
+public class Projector : Equipment
 {
     public string Name = "Projector";
     public Projector() : base()

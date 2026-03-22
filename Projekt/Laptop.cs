@@ -1,6 +1,6 @@
 ﻿namespace Projekt;
 
-public class Laptop
+public class Laptop : Equipment
 {
     public string Name = "Laptop";
     public Laptop() : base()
