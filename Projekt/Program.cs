@@ -1,5 +1,7 @@
 ﻿namespace  Projekt;
 
+using Projekt.Extensions;
+
 public class Program
 {
     // Repozytoria
@@ -154,6 +156,7 @@ public class Program
                     break;
                     
             }
+            SaveDatabase();
         }
     }
 
@@ -167,6 +170,14 @@ public class Program
         Leases = JsonExtensions.LoadAnyListFromFile<Lease>(GetPath("leases.json"));
         
         Console.WriteLine("Database Loaded");
+    }
+
+    private static void SaveDatabase()
+    {
+        Users.WriteAnythingToFile(GetPath("users.json"));
+        Dues.WriteAnythingToFile(GetPath("dues.json"));
+        Equipments.WriteAnythingToFile(GetPath("equipments.json"));
+        Leases.WriteAnythingToFile(GetPath("leases.json"));
     }
     
     

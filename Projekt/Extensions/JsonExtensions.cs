@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Projekt;
+namespace Projekt.Extensions;
 
 public static class JsonExtensions
 {
