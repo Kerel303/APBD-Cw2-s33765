@@ -1,14 +1,14 @@
 ﻿namespace  Projekt;
 
-using Projekt.Extensions;
+using Projekt.Infrastructure;
 
 public class Program
 {
     // Repozytoria
-    static IList<User> Users;
-    static IList<Due> Dues;
-    static IList<Equipment> Equipments;
-    static IList<Lease> Leases;
+    static Repository<User> Users;
+    static Repository<Due> Dues;
+    static Repository<Equipment> Equipments;
+    static Repository<Lease> Leases;
     
     // bool podtrzymujący program przy życiu
     static bool isRunning = true;
@@ -52,29 +52,29 @@ public class Program
                         if (inputArgs[1] == "equipment")
                         {
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments);
+                            PrintList(Equipments.GetList());
                         }else if (inputArgs[1] == "lease")
                         {
                             Console.WriteLine("Leases: ");
-                            PrintList(Leases);    
+                            PrintList(Users.GetList());    
                         }else if (inputArgs[1] == "due")
                         {
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues);
+                            PrintList(Dues.GetList());
                         }else if (inputArgs[1] == "user")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users);
+                            PrintList(Users.GetList());
                         }else if (inputArgs[1] == "all")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users);
+                            PrintList(Users.GetList());
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments);
+                            PrintList(Equipments.GetList());
                             Console.WriteLine("Leases: ");
-                            PrintList(Leases);
+                            PrintList(Leases.GetList());
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues);
+                            PrintList(Dues.GetList());
                         }
                         else
                         {
@@ -156,34 +156,24 @@ public class Program
                     break;
                     
             }
-            SaveDatabase();
         }
     }
-
+    
+    // Ładowanie bazy danych
     private static void LoadDatabase()
     {
         string basePath = AppDomain.CurrentDomain.BaseDirectory;
         
-        Users = JsonExtensions.LoadAnyListFromFile<User>(GetPath("users.json"));
-        Dues = JsonExtensions.LoadAnyListFromFile<Due>(GetPath("dues.json"));
-        Equipments = JsonExtensions.LoadAnyListFromFile<Equipment>(GetPath("equipments.json"));
-        Leases = JsonExtensions.LoadAnyListFromFile<Lease>(GetPath("leases.json"));
+        Users = new Repository<User>(GetPath("users.json"));
+        Dues = new Repository<Due>(GetPath("dues.json"));
+        Equipments = new Repository<Equipment>(GetPath("equipments.json"));
+        Leases = new Repository<Lease>(GetPath("leases.json"));
         
         Console.WriteLine("Database Loaded");
     }
-
-    private static void SaveDatabase()
-    {
-        Users.WriteAnythingToFile(GetPath("users.json"));
-        Dues.WriteAnythingToFile(GetPath("dues.json"));
-        Equipments.WriteAnythingToFile(GetPath("equipments.json"));
-        Leases.WriteAnythingToFile(GetPath("leases.json"));
-    }
-    
-    
     
     // Wyświetlanie całej listy (Trzeba dodać do każdej głównej klasy ovveride na String)
-    public static void PrintList<T>(IList<T> list)
+    public static void PrintList<T>(List<T> list)
     {
         foreach (T item in list)
         {
