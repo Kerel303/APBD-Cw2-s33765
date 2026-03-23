@@ -2,15 +2,15 @@
 
 using System.Text.Json;
 
-public class Repository<T>
+public class Repository<T> : IRepository<T>
 {
-    public string path { get; }
-    private List<T> items;
+    public string Path { get; }
+    private List<T> _items;
     
     public Repository(string path)
     {
-        this.path = path;
-        items = Load(path);
+        this.Path = path;
+        _items = Load(Path);
     }
     
     
@@ -18,14 +18,14 @@ public class Repository<T>
 
     public IReadOnlyList<T> GetList()
     {
-        return items.AsReadOnly();
+        return _items.AsReadOnly();
     }
 
     // Dodawanie danych
 
     public void Add(T item)
     {
-        items.Add(item);
+        _items.Add(item);
         Save();
     }
 
@@ -33,7 +33,7 @@ public class Repository<T>
 
     public void Remove(T item)
     {
-        items.Remove(item);
+        _items.Remove(item);
         Save();
     }
 
@@ -41,29 +41,44 @@ public class Repository<T>
 
     public void Save()
     {
-        File.WriteAllText(path, JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
+        try
+        {
+            File.WriteAllText(Path, JsonSerializer.Serialize(_items, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Błąd podczas zapisywania do pliku: {e.Message}");
+            throw;
+        }
     }
 
     // Wczytanie
 
     private List<T> Load(string path)
     {
-        if (!File.Exists(path))
+        try
         {
-            File.WriteAllText(path, "[]");
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "[]");
+                return new List<T>();
+            }
+
+            string json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();// Jak coś pójdzie źle daje pustą listę
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Błąd podczas wczytywania pliku {path}: {e.Message}");
             return new List<T>();
         }
-
-        var json = File.ReadAllText(path);
-        
-        return JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();// Jak coś pójdzie źle daje pustą listę
     }
     
     // Usuwanie całej listy
 
     public void Clear()
     {
-        items.Clear();
+        _items.Clear();
         Save();
     }
 

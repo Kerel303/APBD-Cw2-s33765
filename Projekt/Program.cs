@@ -52,29 +52,29 @@ public class Program
                         if (inputArgs[1] == "equipment")
                         {
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList());
+                            PrintList(Equipments.GetList().ToList());
                         }else if (inputArgs[1] == "lease")
                         {
                             Console.WriteLine("Leases: ");
-                            PrintList(Users.GetList());    
+                            PrintList(Users.GetList().ToList());    
                         }else if (inputArgs[1] == "due")
                         {
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList());
+                            PrintList(Dues.GetList().ToList());
                         }else if (inputArgs[1] == "user")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users.GetList());
+                            PrintList(Users.GetList().ToList());
                         }else if (inputArgs[1] == "all")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users.GetList());
+                            PrintList(Users.GetList().ToList());
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList());
+                            PrintList(Equipments.GetList().ToList());
                             Console.WriteLine("Leases: ");
-                            PrintList(Leases.GetList());
+                            PrintList(Leases.GetList().ToList());
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList());
+                            PrintList(Dues.GetList().ToList());
                         }
                         else
                         {
