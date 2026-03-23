@@ -1,6 +1,6 @@
 ﻿namespace Projekt;
 
-public class Report
+public class ReportService
 {
     
 }

@@ -1,8 +1,4 @@
-﻿using System.Security.AccessControl;
-
-namespace  Projekt;
-
-using System.Text.Json;
+﻿namespace  Projekt;
 
 public class Program
 {
