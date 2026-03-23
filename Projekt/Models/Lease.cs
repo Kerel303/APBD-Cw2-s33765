@@ -4,10 +4,10 @@ public class Lease
 {
     private int DefaultTimeToReturn = 14; // W dniach
     public Equipment Equipment { get; }
-    DateTime LeaseDate;
-    DateTime ExpiryDate;
+    public DateTime LeaseDate;
+    public DateTime ExpiryDate;
     
-    DateTime ReturnDate;
+    public DateTime? ReturnDate { get; set; }
 
     private bool NoDueDate = false;// False z założenia
 
@@ -53,7 +53,9 @@ public class Lease
 
     int calculateCosts()// opłata = 20 złotych za każdy dzień opóźnienia
     {
-        TimeSpan timeSpan = ExpiryDate - ReturnDate;
+        if (ReturnDate == null)
+            return 0;
+        TimeSpan timeSpan = ExpiryDate - ReturnDate.Value;
         int costs = Rules.CostPerDay * timeSpan.Days;
         return costs;
     }

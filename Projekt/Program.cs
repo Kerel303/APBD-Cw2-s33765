@@ -44,15 +44,24 @@ public class Program
                                       "Like: user, lease, equipment, due\n\n" +
                                       "list - Makes a list of objects currently in the database.\n" +
                                       "Example: list users\n" +
-                                      "You can choose from: equipment, lease, due, user, all\n\n");
+                                      "You can choose from: equipment, lease, due, user, all\n\n" +
+                                      "repot - Makes a simple report\n\n");
                     break;
                 case "list":// TODO: Wyświetlenie wyłącznie dostępnych equipment
-                    if (args == 1)
+                    if (args >= 1)
                     {
                         if (inputArgs[1] == "equipment")
                         {
-                            Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList().ToList());
+                            if (inputArgs.Length > 2 && inputArgs[2] == "availible")
+                            {
+                                Console.WriteLine("Available Equipments: ");
+                                PrintList(Equipments.GetList().Where(e => e.Availibility).ToList());
+                            }
+                            else
+                            {
+                                Console.WriteLine("Equipments: ");
+                                PrintList(Equipments.GetList().ToList());
+                            }
                         }else if (inputArgs[1] == "lease")
                         {
                             Console.WriteLine("Leases: ");
@@ -150,7 +159,12 @@ public class Program
                     }
                     
                     break;
-                
+                case "report": 
+                    Console.WriteLine($"Total equipments: {Equipments.GetList().Count}");
+                    Console.WriteLine($"Available equipments: {Equipments.GetList().Count(e => e.Availibility)}");
+                    Console.WriteLine($"Active leases: {Leases.GetList().Count(l => l.ReturnDate == null)}");
+                    Console.WriteLine($"Overdue leases: {Leases.GetList().Count(l => l.ReturnDate == null && l.ExpiryDate < DateTime.Now)}");
+                    break;
                 default:
                     Console.WriteLine($"'{input}' is not recognized as an available command");
                     break;
