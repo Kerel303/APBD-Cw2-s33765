@@ -7,10 +7,10 @@ using System.Text.Json;
 public class Program
 {
     // Repozytoria
-    static Repository<User> Users;
-    static Repository<Due> Dues;
-    static Repository<Equipment> Equipments;
-    static Repository<Lease> Leases;
+    static IList<User> Users;
+    static IList<Due> Dues;
+    static IList<Equipment> Equipments;
+    static IList<Lease> Leases;
     
     // bool podtrzymujący program przy życiu
     static bool isRunning = true;
@@ -54,29 +54,29 @@ public class Program
                         if (inputArgs[1] == "equipment")
                         {
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList());
+                            PrintList(Equipments);
                         }else if (inputArgs[1] == "lease")
                         {
                             Console.WriteLine("Leases: ");
-                            PrintList(Leases.GetList());    
+                            PrintList(Leases);    
                         }else if (inputArgs[1] == "due")
                         {
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList());
+                            PrintList(Dues);
                         }else if (inputArgs[1] == "user")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users.GetList());
+                            PrintList(Users);
                         }else if (inputArgs[1] == "all")
                         {
                             Console.WriteLine("Users: ");
-                            PrintList(Users.GetList());
+                            PrintList(Users);
                             Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList());
+                            PrintList(Equipments);
                             Console.WriteLine("Leases: ");
-                            PrintList(Leases.GetList());
+                            PrintList(Leases);
                             Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList());
+                            PrintList(Dues);
                         }
                         else
                         {
@@ -165,10 +165,10 @@ public class Program
     {
         string basePath = AppDomain.CurrentDomain.BaseDirectory;
         
-        Users = new Repository<User>(GetPath("users.json"));
-        Dues = new Repository<Due>(GetPath("dues.json"));
-        Equipments = new Repository<Equipment>(GetPath("equipments.json"));
-        Leases = new Repository<Lease>(GetPath("leases.json"));
+        Users = JsonExtensions.LoadAnyListFromFile<User>(GetPath("users.json"));
+        Dues = JsonExtensions.LoadAnyListFromFile<Due>(GetPath("dues.json"));
+        Equipments = JsonExtensions.LoadAnyListFromFile<Equipment>(GetPath("equipments.json"));
+        Leases = JsonExtensions.LoadAnyListFromFile<Lease>(GetPath("leases.json"));
         
         Console.WriteLine("Database Loaded");
     }
@@ -176,7 +176,7 @@ public class Program
     
     
     // Wyświetlanie całej listy (Trzeba dodać do każdej głównej klasy ovveride na String)
-    public static void PrintList<T>(List<T> list)
+    public static void PrintList<T>(IList<T> list)
     {
         foreach (T item in list)
         {
