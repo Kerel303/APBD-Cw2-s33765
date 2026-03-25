@@ -1,4 +1,4 @@
-﻿namespace Projekt;
+﻿namespace Projekt.Models;
 
 public class Due
 {

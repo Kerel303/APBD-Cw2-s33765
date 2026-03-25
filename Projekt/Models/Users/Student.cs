@@ -1,4 +1,4 @@
-﻿namespace Projekt;
+﻿namespace Projekt.Models.Users;
 
 public class Student : User
 {

@@ -1,5 +1,6 @@
-﻿namespace Projekt;
+﻿namespace Projekt.Models;
 
+using Projekt.Models.Users;
 using System.Text.Json.Serialization;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]

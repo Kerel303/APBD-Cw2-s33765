@@ -1,5 +1,8 @@
 ﻿namespace  Projekt;
 
+using Projekt.Models;
+using Projekt.Models.Users;
+using Projekt.Models.Devices;
 using Projekt.Infrastructure;
 
 public class Program
@@ -38,117 +41,15 @@ public class Program
                     isRunning = false;
                     break;
                 case "help":
-                    Console.WriteLine("Available commands:\n\n" +
-                                      "help - Shows available commands.\n\n" +
-                                      "add - Adds the type you want to the database\n" +
-                                      "Like: user, lease, equipment, due\n\n" +
-                                      "list - Makes a list of objects currently in the database.\n" +
-                                      "Example: list users\n" +
-                                      "You can choose from: equipment, lease, due, user, all\n\n" +
-                                      "repot - Makes a simple report\n\n");
+                    HelpCommand();
                     break;
-                case "list":// TODO: Wyświetlenie wyłącznie dostępnych equipment
-                    if (args >= 1)
-                    {
-                        if (inputArgs[1] == "equipment")
-                        {
-                            if (inputArgs.Length > 2 && inputArgs[2] == "availible")
-                            {
-                                Console.WriteLine("Available Equipments: ");
-                                PrintList(Equipments.GetList().Where(e => e.Availibility).ToList());
-                            }
-                            else
-                            {
-                                Console.WriteLine("Equipments: ");
-                                PrintList(Equipments.GetList().ToList());
-                            }
-                        }else if (inputArgs[1] == "lease")
-                        {
-                            Console.WriteLine("Leases: ");
-                            PrintList(Users.GetList().ToList());    
-                        }else if (inputArgs[1] == "due")
-                        {
-                            Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList().ToList());
-                        }else if (inputArgs[1] == "user")
-                        {
-                            Console.WriteLine("Users: ");
-                            PrintList(Users.GetList().ToList());
-                        }else if (inputArgs[1] == "all")
-                        {
-                            Console.WriteLine("Users: ");
-                            PrintList(Users.GetList().ToList());
-                            Console.WriteLine("Equipments: ");
-                            PrintList(Equipments.GetList().ToList());
-                            Console.WriteLine("Leases: ");
-                            PrintList(Leases.GetList().ToList());
-                            Console.WriteLine("Dues: ");
-                            PrintList(Dues.GetList().ToList());
-                        }
-                        else
-                        {
-                            Console.WriteLine("Proper use of the command: list <nameTolist>");
-                            Console.WriteLine("Names to list: equipments, leases, dues, users, all");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Proper use of the command: list <nameTolist>");
-                        Console.WriteLine("Names to list: equipments, leases, dues, users, all");
-                    }
+                case "list" or "ls":
+                    ListCommand(inputArgs, args);
                     break;
                 case "add":
-                    if (args > 1)
-                    {
-                        if (inputArgs[1] == "equipment")
-                        {
-                            if (inputArgs[2].ToLower() == "laptop")
-                            {
-                                Equipments.Add(new Laptop());
-                            }if (inputArgs[2].ToLower() == "camera")
-                            {
-                                Equipments.Add(new Camera());
-                            }if (inputArgs[2].ToLower() == "projector")
-                            {
-                                Equipments.Add(new Projector());
-                            }
-                        }else if (inputArgs[1] == "lease")
-                        {
-                            
-                        }else if (inputArgs[1] == "user")
-                        {
-                            if (inputArgs[2].ToLower() == "student")
-                            {
-                                Users.Add(new Student(inputArgs[3],  inputArgs[4]));
-                            }else if (inputArgs[2].ToLower() == "employee")
-                            {
-                                Users.Add(new Employee(inputArgs[3],  inputArgs[4]));
-                            }
-                            else
-                            {
-                                Console.WriteLine("Invalid input");
-                                Console.WriteLine("Correct Input: add user <type> <name> <surname>");
-                                Console.WriteLine("Existing types: student, employee");
-                            }
-                        }else if (inputArgs[1] == "due")
-                        {
-                            
-                        }else
-                        {
-                            Console.WriteLine("Proper use of the command: add <nameToAdd>");
-                            Console.WriteLine("Names to add: equipment, lease, due, user");
-                            Console.WriteLine("The rest of the command depends on the type you selected.");
-                        }
-                        
-                    }else
-                    {
-                        Console.WriteLine("Proper use of the command: add <nameToAdd>");
-                        Console.WriteLine("Names to add: equipment, lease, due, user");
-                        Console.WriteLine("The rest of the command depends on the type you selected.");
-                    }
-
+                    AddCommand(inputArgs, args);
                     break;
-                case "remove":
+                case "remove" or "rm":
                     if (args > 1)
                     {
                         
@@ -159,11 +60,11 @@ public class Program
                     }
                     
                     break;
-                case "report": 
-                    Console.WriteLine($"Total equipments: {Equipments.GetList().Count}");
-                    Console.WriteLine($"Available equipments: {Equipments.GetList().Count(e => e.Availibility)}");
-                    Console.WriteLine($"Active leases: {Leases.GetList().Count(l => l.ReturnDate == null)}");
-                    Console.WriteLine($"Overdue leases: {Leases.GetList().Count(l => l.ReturnDate == null && l.ExpiryDate < DateTime.Now)}");
+                case "lease":
+                    LeaseCommand(inputArgs, args);
+                    break;
+                case "report" or "rp":
+                    ReportCommand();
                     break;
                 default:
                     Console.WriteLine($"'{input}' is not recognized as an available command");
@@ -200,5 +101,145 @@ public class Program
     {
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
     }
+    
+    
+    
+    
+    
+    // Komendy
+    
+    public static void HelpCommand()
+    {
+        Console.WriteLine("Available commands:\n\n" +
+                          "help - Shows available commands.\n\n" +
+                          "add - Adds the type you want to the database\n" +
+                          "Types: user, lease, equipment, due\n\n" +
+                          "remove - Removes the type you want from the database (short form: rm)\n" +
+                          "Types: user, lease, equipment, due\n\n" +
+                          "list - Makes a list of objects currently in the database. (short form: ls)\n" +
+                          "Example: list users\n" +
+                          "You can choose from: equipment, lease, due, user, all\n\n" +
+                          "repot - Makes a simple report (short form: rp)\n\n");
+    }
 
+    public static void ListCommand(string[] inputArgs,int args)
+    {
+        if (args >= 1)
+        {
+            if (inputArgs[1] == "equipment")
+            {
+                if (inputArgs.Length > 2 && inputArgs[2] == "availible")
+                {
+                    Console.WriteLine("Available Equipments: ");
+                    PrintList(Equipments.GetList().Where(e => e.Availibility).ToList());
+                }
+                else
+                {
+                    Console.WriteLine("Equipments: ");
+                    PrintList(Equipments.GetList().ToList());
+                }
+            }else if (inputArgs[1] == "lease")
+            {
+                Console.WriteLine("Leases: ");
+                PrintList(Users.GetList().ToList());    
+            }else if (inputArgs[1] == "due")
+            {
+                Console.WriteLine("Dues: ");
+                PrintList(Dues.GetList().ToList());
+            }else if (inputArgs[1] == "user")
+            {
+                Console.WriteLine("Users: ");
+                PrintList(Users.GetList().ToList());
+            }else if (inputArgs[1] == "all")
+            {
+                Console.WriteLine("Users: ");
+                PrintList(Users.GetList().ToList());
+                Console.WriteLine("Equipments: ");
+                PrintList(Equipments.GetList().ToList());
+                Console.WriteLine("Leases: ");
+                PrintList(Leases.GetList().ToList());
+                Console.WriteLine("Dues: ");
+                PrintList(Dues.GetList().ToList());
+            }
+            else
+            {
+                Console.WriteLine("Proper use of the command: list <nameTolist>");
+                Console.WriteLine("Names to list: equipments, leases, dues, users, all");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Proper use of the command: list <nameTolist>");
+            Console.WriteLine("Names to list: equipments, leases, dues, users, all");
+        }
+    }
+
+    public static void AddCommand(string[] inputArgs, int args)
+    {
+        if (args > 1)
+        {
+            if (inputArgs[1] == "equipment")
+            {
+                if (inputArgs[2].ToLower() == "laptop")
+                {
+                    Equipments.Add(new Laptop());
+                }if (inputArgs[2].ToLower() == "camera")
+                {
+                    Equipments.Add(new Camera());
+                }if (inputArgs[2].ToLower() == "projector")
+                {
+                    Equipments.Add(new Projector());
+                }
+            }else if (inputArgs[1] == "lease")
+            {
+                
+            }else if (inputArgs[1] == "user")
+            {
+                if (inputArgs.Length >= 5 && inputArgs[2].ToLower() == "student" && inputArgs[3] != "" && inputArgs[4] != "")
+                {
+                    Users.Add(new Student(inputArgs[3],  inputArgs[4]));
+                }else if (inputArgs.Length >= 5 && inputArgs[2].ToLower() == "employee" && inputArgs[3] != "" && inputArgs[4] != "")
+                {
+                    Users.Add(new Employee(inputArgs[3],  inputArgs[4]));
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input");
+                    Console.WriteLine("Correct Input: add user <type> <name> <surname>");
+                    Console.WriteLine("Existing types: student, employee");
+                }
+            }else if (inputArgs[1] == "due")
+            {
+                            
+            }else
+            {
+                Console.WriteLine("Proper use of the command: add <nameToAdd>");
+                Console.WriteLine("Names to add: equipment, lease, due, user");
+                Console.WriteLine("The rest of the command depends on the type you selected.");
+            }
+                        
+        }else
+        {
+            Console.WriteLine("Proper use of the command: add <nameToAdd>");
+            Console.WriteLine("Names to add: equipment, lease, due, user"); Console.WriteLine("The rest of the command depends on the type you selected.");
+        }
+    }
+
+    public static void RemoveCommand(string[] inputArgs, int args)
+    {
+        
+    }
+
+    public static void LeaseCommand(string[] inputArgs, int args)
+    {
+        
+    }
+
+    public static void ReportCommand()
+    {
+        Console.WriteLine($"Total equipments: {Equipments.GetList().Count}");
+        Console.WriteLine($"Available equipments: {Equipments.GetList().Count(e => e.Availibility)}");
+        Console.WriteLine($"Active leases: {Leases.GetList().Count(l => l.ReturnDate == null)}");
+        Console.WriteLine($"Overdue leases: {Leases.GetList().Count(l => l.ReturnDate == null && l.ExpiryDate < DateTime.Now)}");
+    }
 }

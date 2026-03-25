@@ -1,4 +1,4 @@
-﻿namespace Projekt;
+﻿namespace Projekt.Services;
 
 public class ReportService
 {
